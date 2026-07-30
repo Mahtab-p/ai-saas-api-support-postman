@@ -1,0 +1,2024 @@
+{
+  "info": {
+    "_postman_id": "00bb52fd-3e83-447a-9cb8-3414ba8d183a",
+    "name": "AI SaaS API Support Suite",
+    "description": "# **A production-style Postman collection that simulates the responsibilities of an AI SaaS Support Engineer.**\n\nThe collection demonstrates:\n\n- REST API requests\n    \n- Authentication and Bearer tokens\n    \n- Environment and collection variables\n    \n- Automated response validation\n    \n- Request chaining\n    \n- CRUD operations\n    \n- Collection Runner workflows\n    \n- Data-driven testing\n    \n- Troubleshooting common API failures\n    \n- Support escalation evidence",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56465972",
+    "_collection_link": "https://go.postman.co/collection/56465972-00bb52fd-3e83-447a-9cb8-3414ba8d183a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "System Health",
+      "item": [
+        {
+          "name": "01 - API Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is within expected limit\", function () {",
+                  "    const expectedTime = Number(",
+                  "        pm.collectionVariables.get(\"expected_response_time\")",
+                  "    );",
+                  "",
+                  "    pm.expect(pm.response.responseTime).to.be.below(expectedTime);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", function () {",
+                  "    const contentType = pm.response.headers.get(\"Content-Type\");",
+                  "",
+                  "    pm.expect(contentType).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Health status is 200\", function () {",
+                  "    pm.expect(jsonData.status).to.eql(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Health message is OK\", function () {",
+                  "    pm.expect(jsonData.message).to.eql(\"OK\");",
+                  "});",
+                  "",
+                  "console.log(\"Health check status:\", pm.response.code);",
+                  "console.log(\"Health check response time:\", pm.response.responseTime);",
+                  "console.log(\"Health response body:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/http/200",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "http",
+                "200"
+              ]
+            },
+            "description": "**Purpose:**  \nChecks whether the API is reachable and returning a successful JSON response.\n\n**Support use:**  \nRun this request first when a customer reports that the entire API is unavailable.\n\n**Expected result:**\n\n- HTTP 200\n    \n- JSON response\n    \n- status field equals \"200\"\n    \n- message field equals \"OK\"\n    \n- response time below the configured threshold"
+          },
+          "response": []
+        },
+        {
+          "name": "01-test the add bug",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is within expected limit\", function () {",
+                  "    const expectedTime = Number(",
+                  "        pm.collectionVariables.get(\"expected_response_time\")",
+                  "    );",
+                  "",
+                  "    pm.expect(pm.response.responseTime).to.be.below(expectedTime);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", function () {",
+                  "    const contentType = pm.response.headers.get(\"Content-Type\");",
+                  "",
+                  "    pm.expect(contentType).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Health status is 200\", function () {",
+                  "    pm.expect(jsonData.status).to.eql(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Health message is OK\", function () {",
+                  "    pm.expect(jsonData.message).to.eql(\"API Healthy\");",
+                  "});",
+                  "",
+                  "console.log(\"Health check status:\", pm.response.code);",
+                  "console.log(\"Health check response time:\", pm.response.responseTime);",
+                  "console.log(\"Health response body:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/http/200",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "http",
+                "200"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "01 - Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is within expected limit\", function () {",
+                  "    const expectedTime = Number(",
+                  "        pm.collectionVariables.get(\"expected_response_time\")",
+                  "    );",
+                  "",
+                  "    pm.expect(pm.response.responseTime).to.be.below(expectedTime);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", function () {",
+                  "    const contentType = pm.response.headers.get(\"Content-Type\");",
+                  "",
+                  "    pm.expect(contentType).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Access token exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"accessToken\");",
+                  "    pm.expect(jsonData.accessToken).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.accessToken.length).to.be.above(20);",
+                  "});",
+                  "",
+                  "pm.test(\"Refresh token exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"refreshToken\");",
+                  "    pm.expect(jsonData.refreshToken).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.refreshToken.length).to.be.above(20);",
+                  "});",
+                  "",
+                  "pm.test(\"User ID exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"id\");",
+                  "    pm.expect(jsonData.id).to.be.a(\"number\");",
+                  "});",
+                  "",
+                  "pm.test(\"Returned username matches requested username\", function () {",
+                  "    const expectedUsername = pm.environment.get(\"username\");",
+                  "",
+                  "    pm.expect(jsonData.username).to.eql(expectedUsername);",
+                  "});",
+                  "",
+                  "if (jsonData.accessToken) {",
+                  "    pm.environment.set(\"access_token\", jsonData.accessToken);",
+                  "}",
+                  "",
+                  "if (jsonData.refreshToken) {",
+                  "    pm.environment.set(\"refresh_token\", jsonData.refreshToken);",
+                  "}",
+                  "",
+                  "if (jsonData.id) {",
+                  "    pm.environment.set(\"user_id\", jsonData.id);",
+                  "}",
+                  "",
+                  "console.log(\"Login status:\", pm.response.code);",
+                  "console.log(\"Authenticated user:\", jsonData.username);",
+                  "console.log(\"Saved user ID:\", jsonData.id);",
+                  "console.log(\"Access token saved:\", Boolean(jsonData.accessToken));",
+                  "console.log(\"Refresh token saved:\", Boolean(jsonData.refreshToken));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"expiresInMins\": 30\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/Auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "Auth",
+                "login"
+              ]
+            },
+            "description": "No Auth: Login itself does not need an existing token.\n\n**Purpose:**  \nAuthenticates a demo user and retrieves access and refresh tokens.\n\n**Support use:**  \nUse this request when investigating login failures, invalid credentials,  \nmissing tokens, expired sessions, or authentication-response problems.\n\nExpected result:\n\n- HTTP 200\n    \n- Valid JSON response\n    \n- User ID is returned\n    \n- Access token is returned\n    \n- Refresh token is returned\n    \n- Tokens and user ID are saved automatically"
+          },
+          "response": []
+        },
+        {
+          "name": "01 - Invalid Login Credentials",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"wrong-password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/Auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "Auth",
+                "login"
+              ]
+            },
+            "description": "**Scenario:  \nThe customer supplies an invalid password.**\n\nExpected support investigation:\n\n1. Confirm the username.\n    \n2. Confirm that the correct environment is selected.\n    \n3. Verify that the password variable resolves correctly.\n    \n4. Inspect the HTTP status and response error.\n    \n5. Ask the customer to reset or re-enter their credentials."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Profile",
+      "item": [
+        {
+          "name": "New Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"User ID matches saved environment\", function () {",
+                  "    const expectedId = Number(pm.environment.get(\"user_id\"));",
+                  "    pm.expect(jsonData.id).to.eql(expectedId);",
+                  "});",
+                  "",
+                  "pm.test(\"Username matches environment username\", function () {",
+                  "    pm.expect(jsonData.username).to.eql(",
+                  "        pm.environment.get(\"username\")",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test(\"Email exists\", function () {",
+                  "    pm.expect(jsonData.email).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "pm.test(\"Access token successfully authenticated\", function () {",
+                  "    pm.expect(pm.response.code).to.eql(200);",
+                  "});",
+                  "",
+                  "console.log(\"Authenticated User:\", jsonData.username);",
+                  "console.log(\"User ID:\", jsonData.id);",
+                  "console.log(\"Email:\", jsonData.email);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "",
+                "value": "",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"expiresInMins\": 30\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "**Purpose**\n\n**Retrieves the authenticated user's profile using the access token obtained during login.**\n\nSupport Use\n\nUsed to verify that authentication was successful and the access token is valid.\n\nExpected Result\n\n• HTTP 200  \n• Authenticated user information returned  \n• Returned user ID matches saved environment value"
+          },
+          "response": []
+        },
+        {
+          "name": "02 - Missing Bearer Token",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/Auth/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "Auth",
+                ""
+              ]
+            },
+            "description": "**Scenario**\n\n**Customer reports that every authenticated request returns 401.**\n\n**Support Investigation**\n\n1. Verify Login succeeded.\n    \n2. Confirm access_token exists in the active environment.\n    \n3. Check the correct environment is selected.\n    \n4. Verify Authorization uses Bearer Token.\n    \n5. Send the request again after logging in."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AI  Models",
+      "item": [
+        {
+          "name": "AI models",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    jsonData = pm.response.json();",
+                  "});",
+                  "",
+                  "pm.test(\"Products array exists\", function () {",
+                  "    pm.expect(jsonData.products).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "pm.test(\"Returned model count matches requested limit\", function () {",
+                  "    const expectedLimit = Number(",
+                  "        pm.collectionVariables.get(\"default_limit\")",
+                  "    );",
+                  "",
+                  "    pm.expect(jsonData.products.length).to.eql(expectedLimit);",
+                  "});",
+                  "",
+                  "pm.test(\"Total models is greater than zero\", function () {",
+                  "    pm.expect(jsonData.total).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Each model has an ID\", function () {",
+                  "    jsonData.products.forEach(model => {",
+                  "        pm.expect(model).to.have.property(\"id\");",
+                  "    });",
+                  "});",
+                  "",
+                  "console.log(\"Models returned:\", jsonData.products.length);",
+                  "console.log(\"Total models:\", jsonData.total);",
+                  "pm.environment.set(",
+                  "    \"model_id\",",
+                  "    jsonData.products[5].id",
+                  ");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products?limit={{default_limit}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "{{default_limit}}"
+                }
+              ]
+            },
+            "description": "**Purpose**\n\n**Retrieves the list of available AI models.**\n\nSupport Use\n\nUsed when customers report missing or incomplete model lists.\n\nExpected Result\n\n• HTTP 200  \n• JSON response  \n• Array of available models  \n• Number of returned models equals the requested limit"
+          },
+          "response": []
+        },
+        {
+          "name": "02 - Get AI Model Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/{{model_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{model_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Support Tickets",
+      "item": [
+        {
+          "name": "01 - Create Ticket",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Created ticket ID exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"id\");",
+                  "    pm.expect(jsonData.id).to.be.a(\"number\");",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket title matches request\", function () {",
+                  "    pm.expect(jsonData.title).to.eql(",
+                  "        \"Unable to access AI dashboard\"",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket body matches request\", function () {",
+                  "    pm.expect(jsonData.body).to.eql(",
+                  "        \"Customer receives HTTP 401 after login.\"",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket user ID matches authenticated user\", function () {",
+                  "    const expectedUserId = Number(",
+                  "        pm.environment.get(\"user_id\")",
+                  "    );",
+                  "",
+                  "    pm.expect(jsonData.userId).to.eql(expectedUserId);",
+                  "});",
+                  "",
+                  "if (jsonData.id) {",
+                  "    pm.environment.set(\"ticket_id\", jsonData.id);",
+                  "}",
+                  "",
+                  "console.log(\"Simulated ticket created:\", jsonData.id);",
+                  "console.log(",
+                  "    \"Important: DummyJSON does not persist newly created posts.\"",
+                  ");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Unable to access AI dashboard\",\n    \"body\": \"Customer receives HTTP 401 after login.\",\n    \"userId\": {{user_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/posts/add",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts",
+                "add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "02 - Get Ticket",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Ticket ID matches requested ID\", function () {",
+                  "    const expectedId = Number(",
+                  "        pm.environment.get(\"existing_ticket_id\")",
+                  "    );",
+                  "",
+                  "    pm.expect(jsonData.id).to.eql(expectedId);",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket has a title\", function () {",
+                  "    pm.expect(jsonData.title).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.title.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket has a body\", function () {",
+                  "    pm.expect(jsonData.body).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.body.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket has a user ID\", function () {",
+                  "    pm.expect(jsonData.userId).to.be.a(\"number\");",
+                  "});",
+                  "",
+                  "console.log(\"Retrieved existing ticket:\", jsonData.id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/posts/{{existing_ticket_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts",
+                "{{existing_ticket_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03 - Update Ticket",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Updated ticket ID matches requested ID\", function () {",
+                  "    const expectedId = Number(",
+                  "        pm.environment.get(\"existing_ticket_id\")",
+                  "    );",
+                  "",
+                  "    pm.expect(jsonData.id).to.eql(expectedId);",
+                  "});",
+                  "",
+                  "pm.test(\"Updated title is returned\", function () {",
+                  "    pm.expect(jsonData.title).to.eql(",
+                  "        \"Resolved - Customer authenticated successfully\"",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test(\"Updated body is returned\", function () {",
+                  "    pm.expect(jsonData.body).to.eql(",
+                  "        \"The customer logged in again and received a valid access token.\"",
+                  "    );",
+                  "});",
+                  "",
+                  "console.log(\"Simulated ticket update:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Resolved - Customer authenticated successfully\",\n  \"body\": \"The customer logged in again and received a valid access token.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/posts/{{existing_ticket_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts",
+                "{{existing_ticket_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "04 - Delete Ticket",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Deleted ticket ID matches requested ID\", function () {",
+                  "    const expectedId = Number(",
+                  "        pm.environment.get(\"existing_ticket_id\")",
+                  "    );",
+                  "",
+                  "    pm.expect(jsonData.id).to.eql(expectedId);",
+                  "});",
+                  "",
+                  "pm.test(\"Deletion flag is true\", function () {",
+                  "    pm.expect(jsonData.isDeleted).to.eql(true);",
+                  "});",
+                  "",
+                  "pm.test(\"Deletion timestamp exists\", function () {",
+                  "    pm.expect(jsonData.deletedOn).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "console.log(\"Simulated ticket deletion:\", jsonData.id);",
+                  "console.log(\"Deleted on:\", jsonData.deletedOn);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/posts/{{existing_ticket_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts",
+                "{{existing_ticket_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Workflow Validation",
+      "item": [
+        {
+          "name": "01 - API Health Check Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is within expected limit\", function () {",
+                  "    const expectedTime = Number(",
+                  "        pm.collectionVariables.get(\"expected_response_time\")",
+                  "    );",
+                  "",
+                  "    pm.expect(pm.response.responseTime).to.be.below(expectedTime);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", function () {",
+                  "    const contentType = pm.response.headers.get(\"Content-Type\");",
+                  "",
+                  "    pm.expect(contentType).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Health status is 200\", function () {",
+                  "    pm.expect(jsonData.status).to.eql(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Health message is OK\", function () {",
+                  "    pm.expect(jsonData.message).to.eql(\"OK\");",
+                  "});",
+                  "",
+                  "console.log(\"Health check status:\", pm.response.code);",
+                  "console.log(\"Health check response time:\", pm.response.responseTime);",
+                  "console.log(\"Health response body:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/http/200",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "http",
+                "200"
+              ]
+            },
+            "description": "**Purpose:**  \nChecks whether the API is reachable and returning a successful JSON response.\n\n**Support use:**  \nRun this request first when a customer reports that the entire API is unavailable.\n\n**Expected result:**\n\n- HTTP 200\n    \n- JSON response\n    \n- status field equals \"200\"\n    \n- message field equals \"OK\"\n    \n- response time below the configured threshold"
+          },
+          "response": []
+        },
+        {
+          "name": "01 - Login Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is within expected limit\", function () {",
+                  "    const expectedTime = Number(",
+                  "        pm.collectionVariables.get(\"expected_response_time\")",
+                  "    );",
+                  "",
+                  "    pm.expect(pm.response.responseTime).to.be.below(expectedTime);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", function () {",
+                  "    const contentType = pm.response.headers.get(\"Content-Type\");",
+                  "",
+                  "    pm.expect(contentType).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Access token exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"accessToken\");",
+                  "    pm.expect(jsonData.accessToken).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.accessToken.length).to.be.above(20);",
+                  "});",
+                  "",
+                  "pm.test(\"Refresh token exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"refreshToken\");",
+                  "    pm.expect(jsonData.refreshToken).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.refreshToken.length).to.be.above(20);",
+                  "});",
+                  "",
+                  "pm.test(\"User ID exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"id\");",
+                  "    pm.expect(jsonData.id).to.be.a(\"number\");",
+                  "});",
+                  "",
+                  "pm.test(\"Returned username matches requested username\", function () {",
+                  "    const expectedUsername = pm.environment.get(\"username\");",
+                  "",
+                  "    pm.expect(jsonData.username).to.eql(expectedUsername);",
+                  "});",
+                  "",
+                  "if (jsonData.accessToken) {",
+                  "    pm.environment.set(\"access_token\", jsonData.accessToken);",
+                  "}",
+                  "",
+                  "if (jsonData.refreshToken) {",
+                  "    pm.environment.set(\"refresh_token\", jsonData.refreshToken);",
+                  "}",
+                  "",
+                  "if (jsonData.id) {",
+                  "    pm.environment.set(\"user_id\", jsonData.id);",
+                  "}",
+                  "",
+                  "console.log(\"Login status:\", pm.response.code);",
+                  "console.log(\"Authenticated user:\", jsonData.username);",
+                  "console.log(\"Saved user ID:\", jsonData.id);",
+                  "console.log(\"Access token saved:\", Boolean(jsonData.accessToken));",
+                  "console.log(\"Refresh token saved:\", Boolean(jsonData.refreshToken));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"expiresInMins\": 30\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/Auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "Auth",
+                "login"
+              ]
+            },
+            "description": "No Auth: Login itself does not need an existing token.\n\n**Purpose:**  \nAuthenticates a demo user and retrieves access and refresh tokens.\n\n**Support use:**  \nUse this request when investigating login failures, invalid credentials,  \nmissing tokens, expired sessions, or authentication-response problems.\n\nExpected result:\n\n- HTTP 200\n    \n- Valid JSON response\n    \n- User ID is returned\n    \n- Access token is returned\n    \n- Refresh token is returned\n    \n- Tokens and user ID are saved automatically"
+          },
+          "response": []
+        },
+        {
+          "name": "New Request Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"User ID matches saved environment\", function () {",
+                  "    const expectedId = Number(pm.environment.get(\"user_id\"));",
+                  "    pm.expect(jsonData.id).to.eql(expectedId);",
+                  "});",
+                  "",
+                  "pm.test(\"Username matches environment username\", function () {",
+                  "    pm.expect(jsonData.username).to.eql(",
+                  "        pm.environment.get(\"username\")",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test(\"Email exists\", function () {",
+                  "    pm.expect(jsonData.email).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "pm.test(\"Access token successfully authenticated\", function () {",
+                  "    pm.expect(pm.response.code).to.eql(200);",
+                  "});",
+                  "",
+                  "console.log(\"Authenticated User:\", jsonData.username);",
+                  "console.log(\"User ID:\", jsonData.id);",
+                  "console.log(\"Email:\", jsonData.email);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "",
+                "value": "",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"expiresInMins\": 30\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "**Purpose**\n\n**Retrieves the authenticated user's profile using the access token obtained during login.**\n\nSupport Use\n\nUsed to verify that authentication was successful and the access token is valid.\n\nExpected Result\n\n• HTTP 200  \n• Authenticated user information returned  \n• Returned user ID matches saved environment value"
+          },
+          "response": []
+        },
+        {
+          "name": "AI models Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    jsonData = pm.response.json();",
+                  "});",
+                  "",
+                  "pm.test(\"Products array exists\", function () {",
+                  "    pm.expect(jsonData.products).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "pm.test(\"Returned model count matches requested limit\", function () {",
+                  "    const expectedLimit = Number(",
+                  "        pm.collectionVariables.get(\"default_limit\")",
+                  "    );",
+                  "",
+                  "    pm.expect(jsonData.products.length).to.eql(expectedLimit);",
+                  "});",
+                  "",
+                  "pm.test(\"Total models is greater than zero\", function () {",
+                  "    pm.expect(jsonData.total).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Each model has an ID\", function () {",
+                  "    jsonData.products.forEach(model => {",
+                  "        pm.expect(model).to.have.property(\"id\");",
+                  "    });",
+                  "});",
+                  "",
+                  "console.log(\"Models returned:\", jsonData.products.length);",
+                  "console.log(\"Total models:\", jsonData.total);",
+                  "pm.environment.set(",
+                  "    \"model_id\",",
+                  "    jsonData.products[5].id",
+                  ");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products?limit={{default_limit}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "{{default_limit}}"
+                }
+              ]
+            },
+            "description": "**Purpose**\n\n**Retrieves the list of available AI models.**\n\nSupport Use\n\nUsed when customers report missing or incomplete model lists.\n\nExpected Result\n\n• HTTP 200  \n• JSON response  \n• Array of available models  \n• Number of returned models equals the requested limit"
+          },
+          "response": []
+        },
+        {
+          "name": "01 - Create Ticket Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Created ticket ID exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"id\");",
+                  "    pm.expect(jsonData.id).to.be.a(\"number\");",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket title matches request\", function () {",
+                  "    pm.expect(jsonData.title).to.eql(",
+                  "        \"Unable to access AI dashboard\"",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket body matches request\", function () {",
+                  "    pm.expect(jsonData.body).to.eql(",
+                  "        \"Customer receives HTTP 401 after login.\"",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket user ID matches authenticated user\", function () {",
+                  "    const expectedUserId = Number(",
+                  "        pm.environment.get(\"user_id\")",
+                  "    );",
+                  "",
+                  "    pm.expect(jsonData.userId).to.eql(expectedUserId);",
+                  "});",
+                  "",
+                  "if (jsonData.id) {",
+                  "    pm.environment.set(\"ticket_id\", jsonData.id);",
+                  "}",
+                  "",
+                  "console.log(\"Simulated ticket created:\", jsonData.id);",
+                  "console.log(",
+                  "    \"Important: DummyJSON does not persist newly created posts.\"",
+                  ");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Unable to access AI dashboard\",\n    \"body\": \"Customer receives HTTP 401 after login.\",\n    \"userId\": {{user_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/posts/add",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts",
+                "add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "02 - Get Ticket Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Ticket ID matches requested ID\", function () {",
+                  "    const expectedId = Number(",
+                  "        pm.environment.get(\"existing_ticket_id\")",
+                  "    );",
+                  "",
+                  "    pm.expect(jsonData.id).to.eql(expectedId);",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket has a title\", function () {",
+                  "    pm.expect(jsonData.title).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.title.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket has a body\", function () {",
+                  "    pm.expect(jsonData.body).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.body.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Ticket has a user ID\", function () {",
+                  "    pm.expect(jsonData.userId).to.be.a(\"number\");",
+                  "});",
+                  "",
+                  "console.log(\"Retrieved existing ticket:\", jsonData.id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/posts/{{existing_ticket_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts",
+                "{{existing_ticket_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03 - Update Ticket Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Updated ticket ID matches requested ID\", function () {",
+                  "    const expectedId = Number(",
+                  "        pm.environment.get(\"existing_ticket_id\")",
+                  "    );",
+                  "",
+                  "    pm.expect(jsonData.id).to.eql(expectedId);",
+                  "});",
+                  "",
+                  "pm.test(\"Updated title is returned\", function () {",
+                  "    pm.expect(jsonData.title).to.eql(",
+                  "        \"Resolved - Customer authenticated successfully\"",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test(\"Updated body is returned\", function () {",
+                  "    pm.expect(jsonData.body).to.eql(",
+                  "        \"The customer logged in again and received a valid access token.\"",
+                  "    );",
+                  "});",
+                  "",
+                  "console.log(\"Simulated ticket update:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Resolved - Customer authenticated successfully\",\n  \"body\": \"The customer logged in again and received a valid access token.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/posts/{{existing_ticket_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts",
+                "{{existing_ticket_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "04 - Delete Ticket Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Deleted ticket ID matches requested ID\", function () {",
+                  "    const expectedId = Number(",
+                  "        pm.environment.get(\"existing_ticket_id\")",
+                  "    );",
+                  "",
+                  "    pm.expect(jsonData.id).to.eql(expectedId);",
+                  "});",
+                  "",
+                  "pm.test(\"Deletion flag is true\", function () {",
+                  "    pm.expect(jsonData.isDeleted).to.eql(true);",
+                  "});",
+                  "",
+                  "pm.test(\"Deletion timestamp exists\", function () {",
+                  "    pm.expect(jsonData.deletedOn).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "console.log(\"Simulated ticket deletion:\", jsonData.id);",
+                  "console.log(\"Deleted on:\", jsonData.deletedOn);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/posts/{{existing_ticket_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts",
+                "{{existing_ticket_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "# Mock API Limitations\n\n## Purpose\n\nThis project uses **DummyJSON** as a mock REST API to demonstrate API Support Engineering workflows. DummyJSON provides realistic endpoints for authentication, users, products, and posts, making it an excellent platform for practicing Postman, API testing, and troubleshooting.\n\n## Why this matters\n\nDummyJSON is a **mock API**, not a production backend. Some operations are simulated rather than permanently stored.\n\nFor example:\n\n- Creating a support ticket returns a successful response with a generated ID.\n    \n- Updating a ticket returns the modified object.\n    \n- Deleting a ticket returns a successful deletion response.\n    \n\nHowever, these operations **do not permanently modify the server-side database**.\n\n## Workflow Design\n\nBecause of this limitation, the workflow is designed as follows:\n\n1. Authenticate and save the access token.\n    \n2. Retrieve the authenticated user.\n    \n3. Retrieve available API resources.\n    \n4. Create a simulated support ticket and validate the response.\n    \n5. Retrieve, update, and delete a known existing ticket using a predefined ID.\n    \n\nThis approach demonstrates the same API support techniques used in production environments while remaining compatible with the behavior of the mock API.\n\n## Skills Demonstrated\n\nAlthough DummyJSON is a mock service, this project demonstrates real-world API Support Engineering skills, including:\n\n- REST API testing\n    \n- Authentication using Bearer Tokens\n    \n- Environment and Collection Variables\n    \n- Request Chaining\n    \n- Automated Postman Tests\n    \n- Collection Runner\n    \n- API Troubleshooting\n    \n- HTTP Status Code Validation\n    \n- Professional Documentation\n    \n\n## Future Enhancement\n\nA future version of this project will replace DummyJSON with a production AI API (such as OpenAI or Azure OpenAI) to demonstrate the same support workflow against a real AI platform."
+    },
+    {
+      "name": "Troubleshooting Scenarios",
+      "item": [
+        {
+          "name": "Invalid Login Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Invalid credentials are rejected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 401]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Authentication error message exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"message\");",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.message.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Access token is not returned\", function () {",
+                  "    pm.expect(jsonData).not.to.have.property(\"accessToken\");",
+                  "});",
+                  "",
+                  "console.log(\"Expected authentication failure:\", pm.response.code);",
+                  "console.log(\"Error response:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"wrong-password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Scenario:  \n**The customer attempts to log in with an incorrect password.**\n\nExpected behavior:  \nThe API rejects the credentials and does not return an access token.\n\nSupport checks:\n\n1. Confirm the username is correct.\n    \n2. Confirm the correct environment is selected.\n    \n3. Inspect whether the password variable resolves correctly.\n    \n4. Review the response status and error message.\n    \n5. Recommend password reset or credential verification."
+          },
+          "response": []
+        },
+        {
+          "name": "Missing Bearer Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Missing token is rejected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Error message exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"message\");",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "pm.test(\"User profile is not returned\", function () {",
+                  "    pm.expect(jsonData).not.to.have.property(\"username\");",
+                  "});",
+                  "",
+                  "console.log(\"Missing-token response:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Scenario:  \n**The authenticated profile endpoint is called without an Authorization header.**\n\nExpected behavior:  \nThe API rejects the request because no access token was supplied.\n\nSupport checks:\n\n1. Confirm Login succeeded.\n    \n2. Confirm access_token was saved.\n    \n3. Confirm the correct environment is active.\n    \n4. Verify Bearer Token authorization is configured.\n    \n5. Retry the request after logging in."
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Bearer Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Invalid token is rejected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Authentication error is returned\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"message\");",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "pm.test(\"Protected user data is not exposed\", function () {",
+                  "    pm.expect(jsonData).not.to.have.property(\"email\");",
+                  "    pm.expect(jsonData).not.to.have.property(\"username\");",
+                  "});",
+                  "",
+                  "console.log(\"Invalid-token response:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Scenario:  \n**The request includes a Bearer token, but the token is invalid or corrupted.**\n\nExpected behavior:  \nThe protected endpoint rejects the request.\n\nPossible causes:\n\n- Expired token\n    \n- Token copied incorrectly\n    \n- Token issued by another environment\n    \n- Incorrect token type\n    \n- Token altered or truncated\n    \n\nRecommended resolution:  \nLog in again, obtain a new access token, and retry the request."
+          },
+          "response": []
+        },
+        {
+          "name": "Resource Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Not-found message exists\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"message\");",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "pm.test(\"No resource data is returned\", function () {",
+                  "    pm.expect(jsonData).not.to.have.property(\"title\");",
+                  "    pm.expect(jsonData).not.to.have.property(\"body\");",
+                  "});",
+                  "",
+                  "console.log(\"Not-found response:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/posts/999999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "posts",
+                "999999"
+              ]
+            },
+            "description": "Scenario:  \n**The customer requests a resource ID that does not exist.**\n\nExpected behavior:  \nThe API returns HTTP 404.\n\nSupport checks:\n\n1. Verify the resource ID.\n    \n2. Confirm the resource belongs to the correct environment.\n    \n3. Check whether the record was deleted.\n    \n4. Confirm the endpoint path is correct.\n    \n5. Review whether the API persists created records."
+          },
+          "response": []
+        },
+        {
+          "name": "05 - Bad Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains status information\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"status\");",
+                  "    pm.expect(String(jsonData.status)).to.eql(\"400\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains an error message\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"message\");",
+                  "});",
+                  "",
+                  "console.log(\"Bad-request response:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/http/400",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "http",
+                "400"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "06 - Method Not Allowed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 405\", function () {",
+                  "    pm.response.to.have.status(405);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains status information\", function () {",
+                  "    pm.expect(String(jsonData.status)).to.eql(\"405\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains a message\", function () {",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "console.log(\"Method-not-allowed response:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/http/405",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "http",
+                "405"
+              ]
+            },
+            "description": "Scenario:  \n**The endpoint receives an unsupported HTTP method.**\n\nExample:  \nA customer sends GET when the endpoint requires POST.\n\nExpected behavior:  \nThe API returns HTTP 405 Method Not Allowed.\n\nSupport checks:\n\n1. Verify the HTTP method.\n    \n2. Compare it with the API documentation.\n    \n3. Confirm that the correct request was imported.\n    \n4. Check whether a proxy or application changed the method."
+          },
+          "response": []
+        },
+        {
+          "name": "Rate Limit Exceeded",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "",
+                  "pm.test(\"Status code is 429\", function () {",
+                  "    pm.response.to.have.status(429);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.expect(function () {",
+                  "        jsonData = pm.response.json();",
+                  "    }).not.to.throw();",
+                  "});",
+                  "",
+                  "jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Rate-limit status is returned\", function () {",
+                  "    pm.expect(String(jsonData.status)).to.eql(\"429\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains a message\", function () {",
+                  "    pm.expect(jsonData.message).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "console.log(\"Rate-limit response:\", jsonData);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/http/429",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "http",
+                "429"
+              ]
+            },
+            "description": "Scenario:  \n**The customer has exceeded the API request limit.**\n\nExpected behavior:  \nThe API returns HTTP 429 Too Many Requests.\n\nSupport checks:\n\n1. Check the customer's request frequency.\n    \n2. Review rate-limit documentation.\n    \n3. Inspect Retry-After or rate-limit headers, if available.\n    \n4. Confirm whether multiple services share the same API key.\n    \n5. Recommend exponential backoff and retry logic.\n    \n6. Escalate if usage is within the customer's assigned limit."
+          },
+          "response": []
+        },
+        {
+          "name": "Internal Server Error",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Scenario:  \n**The server encounters an unexpected condition while processing the request.**\n\nExpected behavior:  \nThe API returns HTTP 500 Internal Server Error.\n\nSupport checks:\n\n1. Confirm the request format is valid.\n    \n2. Retry once to identify whether the failure is temporary.\n    \n3. Check the service health page.\n    \n4. Capture the timestamp and request ID.\n    \n5. Review application and server logs.\n    \n6. Determine whether multiple customers are affected.\n    \n7. Escalate with reproducible evidence.\n    \n\nImportant:  \nDo not repeatedly retry a failing request without limits."
+          },
+          "response": []
+        }
+      ],
+      "description": "This folder contains intentional API failure scenarios designed to demonstrate structured investigation and error-response validation.\n\nThese requests are separate from the successful end-to-end workflow. Each request intentionally triggers a specific HTTP error and includes tests that confirm the API returns the expected failure response.\n\n## Scenarios Covered\n\n- Invalid login credentials\n    \n- Missing Bearer token\n    \n- Invalid Bearer token\n    \n- Resource not found\n    \n- Bad request\n    \n- Method not allowed\n    \n- Rate limit exceeded\n    \n- Internal server error\n    \n\n## Testing Approach\n\nAn HTTP error does not automatically represent a failed test.\n\nFor example, the expected result of the **Resource Not Found** scenario is HTTP `404`. The Postman test passes when the API correctly returns that status and provides an appropriate JSON error response.\n\nThis approach verifies that the API handles invalid requests predictably and securely.\n\n## Support Investigation Framework\n\nFor each problem, the investigation considers:\n\n1. Request URL and endpoint\n    \n2. HTTP method\n    \n3. Authorization configuration\n    \n4. Headers\n    \n5. Request body and JSON syntax\n    \n6. Environment and variable values\n    \n7. HTTP status\n    \n8. Response body\n    \n9. Postman Console output\n    \n10. Evidence required for escalation"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "console.log(",
+          "    \"Workflow request completed:\",",
+          "    pm.info.requestName,",
+          "    \"| Status:\",",
+          "    pm.response.code,",
+          "    \"| Time:\",",
+          "    pm.response.responseTime + \"ms\"",
+          ");",
+          "",
+          "pm.test(\"Workflow response time is acceptable\", function () {",
+          "    const expectedTime = Number(",
+          "        pm.collectionVariables.get(\"expected_response_time\")",
+          "    );",
+          "",
+          "    pm.expect(pm.response.responseTime).to.be.below(expectedTime);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "expected_response_time",
+      "value": ""
+    },
+    {
+      "key": "default_limit",
+      "value": ""
+    },
+    {
+      "key": "project_name",
+      "value": ""
+    }
+  ]
+}
